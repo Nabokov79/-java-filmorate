@@ -1,42 +1,34 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.validators.Before;
-
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class User {
-    private int id;
+    private long id;
     @Email
     private String email;
     @NotBlank
     @Pattern(regexp = "\\S*$")
     private String login;
-
     private String name;
     @Before()
     @NotNull
     private LocalDate birthday;
 
-
-
-    public int getId() {
-        if (id == 0) {
-            return id + 1;
-        }
-        return id;
+    public User(long id, String email, String login, String name, LocalDate birthday) {
+        this.id = id;
+        this.email = email;
+        this.login = login;
+        if(name == null || name.equals("")) {
+            this.name = login;
+        } else { this.name = name;}
+        this.birthday = birthday;
     }
 
-    public String getName() {
-        if(name == null || name.equals("")) {
-            return login;
-        }
-        return name;
+    public long addNewIdUser() {
+        return id += 1;
     }
 }

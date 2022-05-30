@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Film {
-    private int id;
+    private long id;
     @NotEmpty
     @NotNull
     private String name;
@@ -28,10 +28,8 @@ public class Film {
     @NotNull
     private int duration;
 
-    public int getId() {
-        if (id == 0) {
-            return id += 1;
-        }
-        return id;
+
+    public long addNewIdFilm() {
+        return id += 1;
     }
 }
