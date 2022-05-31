@@ -37,9 +37,4 @@ public class ValidationErrorException {
                 .collect(Collectors.toList());
         return new ValidationErrorResponse(violations);
     }
-    @ResponseBody
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleException(HttpMessageNotReadableException e) {
-        return ResponseEntity.status(500).body(e.getMessage());
-    }
 }
