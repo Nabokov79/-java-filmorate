@@ -132,14 +132,14 @@ public class FilmControllerTests {
                                     .contentType(MediaType.APPLICATION_JSON))
                                     .andReturn();
         int statusCod = response.getResponse().getStatus();
-        assertEquals(500, statusCod, "Код ответа " + statusCod);
+        assertEquals(400, statusCod, "Код ответа " + statusCod);
     }
 
     @Test
     void test1_updateValidFilmResponseShouldBeOk() throws Exception {
         Film film = new Film(0, "nisi eiusmod", "nisi eiusmod"
                                  , LocalDate.of(1967, 3, 25), 1000);
-        Film film_1 = new Film(1, "nisi eiusmod", "nisi eiusmod"
+        Film film_1 = new Film(1, "eiusmod", "nisi eiusmod"
                 , LocalDate.of(1967, 3, 25), 100);
         String body = mapper.writeValueAsString(film);
         String body_1 = mapper.writeValueAsString(film_1);
@@ -172,7 +172,7 @@ public class FilmControllerTests {
                                     .contentType(MediaType.APPLICATION_JSON))
                                     .andReturn();
         int statusCod = response.getResponse().getStatus();
-        assertEquals(500, statusCod, "Код ответа " + statusCod);
+        assertEquals(400, statusCod, "Код ответа " + statusCod);
     }
 
     @Test
