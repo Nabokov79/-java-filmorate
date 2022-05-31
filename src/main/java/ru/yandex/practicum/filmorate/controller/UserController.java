@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.yandex.practicum.filmorate.model.User;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +22,7 @@ public class UserController {
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         if (users.containsKey(user.getId())) {
             log.info("Ошибка добавления данных пользователя: " + user.getName());
-            return ResponseEntity.ok().body(user);
+            return ResponseEntity.badRequest().body(user);
         }
         users.put(user.addNewIdUser(), user);
         return ResponseEntity.ok().body(user);

@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +28,11 @@ public class FilmController {
         return ResponseEntity.ok().body(film);
     }
 
-    @PutMapping
+   @PutMapping
    public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
         if (!films.containsKey(film.getId())) {
             log.info("Ошибка обновления данных Film: " + film.getName());
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(film);
         }
         films.put(film.getId(), film);
         return ResponseEntity.ok().body(film);
