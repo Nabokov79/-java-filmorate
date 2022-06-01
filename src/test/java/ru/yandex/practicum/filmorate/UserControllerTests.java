@@ -27,7 +27,7 @@ class UserControllerTests {
     MockMvc mockMvc;
     @Test
     void test1_createValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(1, "mail@mail.ru", "login", "name"
+        User user = new User("mail@mail.ru", "login", "name"
                                  , LocalDate.of(1967, 3, 25));
         String body = mapper.writeValueAsString(user);
         MvcResult response = mockMvc.perform(post("/users")
@@ -41,7 +41,7 @@ class UserControllerTests {
 
     @Test
     void test2_createValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(2, "mail.ru", "login", "name"
+        User user = new User("mail.ru", "login", "name"
                                  , LocalDate.of(1967, 3, 25));
         String body = mapper.writeValueAsString(user);
         MvcResult response = mockMvc.perform(post("/users")
@@ -58,7 +58,7 @@ class UserControllerTests {
     }
     @Test
     void test3_createValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(3, "mail@mail.ru", null, "name"
+        User user = new User("mail@mail.ru", null, "name"
                                  , LocalDate.of(1967, 3, 25));
         String body = mapper.writeValueAsString(user);
         MvcResult response = mockMvc.perform(post("/users")
@@ -76,7 +76,7 @@ class UserControllerTests {
 
     @Test
     void test4_createValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(4, "mail@mail.ru", "login login", "name"
+        User user = new User("mail@mail.ru", "login login", "name"
                                  , LocalDate.of(1967, 3, 25));
         String body = mapper.writeValueAsString(user);
         MvcResult response = mockMvc.perform(post("/users")
@@ -94,7 +94,7 @@ class UserControllerTests {
 
     @Test
     void test5_createValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(5, "mail@mail.ru", "Login", ""
+        User user = new User("mail@mail.ru", "Login", ""
                                  , LocalDate.of(1967, 3, 25));
         String body = mapper.writeValueAsString(user);
         mockMvc.perform(post("/users")
@@ -105,7 +105,7 @@ class UserControllerTests {
 
     @Test
     void test6_createValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(6, "mail@mail.ru", "Login", null
+        User user = new User("mail@mail.ru", "Login", null
                                  , LocalDate.of(1967, 3, 25));
         String body = mapper.writeValueAsString(user);
         mockMvc.perform(post("/users")
@@ -117,7 +117,7 @@ class UserControllerTests {
 
     @Test
     void test7_createValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(7, "mail@mail.ru", "login", "name"
+        User user = new User("mail@mail.ru", "login", "name"
                                  , LocalDate.of(2967, 3, 25));
         String body = mapper.writeValueAsString(user);
         MvcResult response = mockMvc.perform(post("/users")
@@ -134,7 +134,7 @@ class UserControllerTests {
     }
     @Test
     void test8_createValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(8, "mail@mail.ru", "login", "name", null);
+        User user = new User("mail@mail.ru", "login", "name", null);
         String body = mapper.writeValueAsString(user);
         MvcResult response = mockMvc.perform(post("/users")
                                     .contentType(MediaType.APPLICATION_JSON)
@@ -151,7 +151,7 @@ class UserControllerTests {
 
     @Test
     void test9_createValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(9, "mail@mail.ru", "login", "name", null);
+        User user = new User("mail@mail.ru", "login", "name", null);
         String body = mapper.writeValueAsString(user);
         mockMvc.perform(post("/users")
                .contentType(MediaType.APPLICATION_JSON)
@@ -183,12 +183,11 @@ class UserControllerTests {
 
     @Test
     void test1_updateValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(10, "mail@mail.ru", "login", "name"
+        User user = new User("mail@mail.ru", "login", "name"
                                  , LocalDate.of(1967, 3, 25));
-        User user_1 = new User(11, "Name@mail.ru", "login", "Name"
-                                   , LocalDate.of(1977, 3, 25));
         String body = mapper.writeValueAsString(user);
-        String body_1 = mapper.writeValueAsString(user_1);
+        String body_1 = "{\"id\":1,\"email\":\"mail@mail.ru\",\"login\":\"login\",\"name\":\"name\"" +
+                                                                        ",\"birthday\":\"1967-03-25\"}";
         this.mockMvc.perform(post("/users")
                     .content(body)
                     .contentType(MediaType.APPLICATION_JSON))
@@ -210,7 +209,7 @@ class UserControllerTests {
 
     @Test
     void test3_updateValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(12, "mail@mail.ru", "login", "name"
+        User user = new User("mail@mail.ru", "login", "name"
                                  , LocalDate.of(1967, 3, 25));
         String body = mapper.writeValueAsString(user);
         MvcResult response = mockMvc.perform(put("/users")
@@ -223,9 +222,9 @@ class UserControllerTests {
 
     @Test
     void test1_findValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(13, "mail@mail.ru", "login", "name"
+        User user = new User("mail@mail.ru", "login", "name"
                                  , LocalDate.of(1967, 3, 25));
-        User user_1 = new User(15, "mail@mail.ru", "login", "name"
+        User user_1 = new User("mail@mail.ru", "login", "name"
                                    , LocalDate.of(1987, 5, 15));
         String body = mapper.writeValueAsString(user);
         String body_1 = mapper.writeValueAsString(user_1);
