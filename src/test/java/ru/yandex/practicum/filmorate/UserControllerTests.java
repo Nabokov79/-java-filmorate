@@ -217,7 +217,7 @@ class UserControllerTests {
                                     .contentType(MediaType.APPLICATION_JSON))
                                     .andReturn();
         int statusCod = response.getResponse().getStatus();
-        assertEquals(400, statusCod, "Код ответа " + statusCod);
+        assertEquals(404, statusCod, "Код ответа " + statusCod);
     }
 
     @Test
