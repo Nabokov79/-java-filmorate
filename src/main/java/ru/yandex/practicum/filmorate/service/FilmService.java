@@ -28,8 +28,12 @@ public class FilmService {
         return film;
     }
 
-    public ArrayList<Film> getAllFilms() {
+    public List<Film> getAllFilms() {
         return filmStorage.getAllFilms();
+    }
+
+    public void deleteFilmById(long id) {
+        filmStorage.deleteFilmById(id);
     }
 
     public Film getFilmById(long id) {

@@ -23,26 +23,29 @@ public class UserService {
         userStorage.updateUser(user);
     }
 
-    public ArrayList<User> getAllUsers() {
+    public List<User> getAllUsers() {
         return userStorage.getAllUsers();
     }
 
     public User getUserById(long id) {
         return userStorage.getUserById(id);
     }
+    public void deleteUserById(long id) {
+        userStorage.deleteUserById(id);
+    }
 
     public User addNewFriend(long id, long friendId) {
         User user = userStorage.getUserById(id);
-        user.addFriends(friendId);
+        user.addFriend(friendId);
         userStorage.updateUser(user);
         User friend = userStorage.getUserById(friendId);
-        friend.addFriends(id);
+        friend.addFriend(id);
         userStorage.updateUser(friend);
         return user;
     }
 
     public User deleteFriend(long id, long friendId) {
-        userStorage.getUserById(id).deleteFriends(friendId);
+        userStorage.getUserById(id).deleteFriend(friendId);
         return userStorage.getUserById(id);
 
     }
