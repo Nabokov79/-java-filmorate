@@ -31,12 +31,10 @@ public class User {
         this.birthday = birthday;
     }
 
-    public void addFriends(long friendId) {
+    public void addFriend(long friendId) {
         friends.add(friendId);
     }
-    public void deleteFriends(long userId) {
+    public void deleteFriend(long userId) {
         friends.remove(userId);
     }
-
-
 }
