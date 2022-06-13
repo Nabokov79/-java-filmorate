@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FilmControllerTests {
     @Autowired
     ObjectMapper mapper;
+
     @Autowired
     MockMvc mockMvc;
 
