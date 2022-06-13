@@ -39,7 +39,7 @@ public class FilmController {
 
     @PutMapping
     public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
-        if (filmStorage.getFilmsById(film.getId()) == null || film.getId() < 0) {
+        if (filmStorage.getFilmsById(film.getId()) == null) {
             log.info("Ошибка обновления данных Film: " + film.getName());
             return ResponseEntity.notFound().build();
         }
@@ -54,7 +54,7 @@ public class FilmController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Film> getFilmById(@PathVariable long id) {
-        if (filmStorage.getFilmsById(id) == null || id < 0) {
+        if (filmStorage.getFilmsById(id) == null) {
             log.info("Ошибка параметра запроса: " + id);
             return ResponseEntity.notFound().build();
         }
@@ -63,7 +63,7 @@ public class FilmController {
 
     @PutMapping(value = "/{id}/like/{userId}")
     public ResponseEntity<Film> addNewLikeFilm(@PathVariable long id, @PathVariable long userId) {
-        if (filmStorage.getFilmsById(id) == null || filmStorage.getFilmsById(userId) == null || id < 0 || userId < 0) {
+        if (filmStorage.getFilmsById(id) == null || filmStorage.getFilmsById(userId) == null) {
             log.info("Ошибка параметра запроса: " + id + " " + userId);
             return ResponseEntity.notFound().build();
         }
@@ -72,7 +72,7 @@ public class FilmController {
 
     @DeleteMapping(value = "/{id}/like/{userId}")
     public ResponseEntity<Film> deleteLike(@PathVariable long id, @PathVariable long userId) {
-        if (filmStorage.getFilmsById(id) == null || filmStorage.getFilmsById(userId) == null || id < 0 || userId < 0) {
+        if (filmStorage.getFilmsById(id) == null || filmStorage.getFilmsById(userId) == null) {
             log.info("Ошибка параметра запроса: " + id + " " + userId);
             return ResponseEntity.notFound().build();
         }
