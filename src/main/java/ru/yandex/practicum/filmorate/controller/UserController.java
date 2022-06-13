@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -48,17 +47,26 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<ArrayList<User>> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
+    public ResponseEntity<User> getUserById(@PathVariable long id) {
         if (userStorage.getUserById(id) == null ) {
             log.info("Ошибка параметра запроса: " + id);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(userService.getUserById(id));
+    }
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<User> deleteUserById(@PathVariable long id) {
+        if (userStorage.getUserById(id) == null ) {
+            log.info("Ошибка параметра запроса: " + id);
+            return ResponseEntity.notFound().build();
+        }
+        userService.deleteUserById(id);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping(value = "/{id}/friends/{friendId}")

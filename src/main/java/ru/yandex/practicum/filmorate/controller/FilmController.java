@@ -6,11 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -48,8 +48,18 @@ public class FilmController {
 
 
     @GetMapping
-    public ResponseEntity<ArrayList<Film>> getAllFilms() {
+    public ResponseEntity<List<Film>> getAllFilms() {
         return ResponseEntity.ok().body(filmService.getAllFilms());
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<User> deleteFilmById(@PathVariable long id) {
+        if (filmService.getFilmById(id) == null ) {
+            log.info("Ошибка параметра запроса: " + id);
+            return ResponseEntity.notFound().build();
+        }
+        filmService.deleteFilmById(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "/{id}")
