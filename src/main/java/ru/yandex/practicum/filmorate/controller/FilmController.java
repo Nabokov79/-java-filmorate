@@ -55,6 +55,7 @@ public class FilmController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<Film> getFilmById(@PathVariable long id) {
         if (filmStorage.getFilmsById(id) == null || id < 0) {
+            log.info("Ошибка параметра запроса: " + id);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(filmService.getFilmById(id));
@@ -63,6 +64,7 @@ public class FilmController {
     @PutMapping(value = "/{id}/like/{userId}")
     public ResponseEntity<Film> addNewLikeFilm(@PathVariable long id, @PathVariable long userId) {
         if (filmStorage.getFilmsById(id) == null || filmStorage.getFilmsById(userId) == null || id < 0 || userId < 0) {
+            log.info("Ошибка параметра запроса: " + id + " " + userId);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(filmService.addNewLikeFilm(id, userId));
@@ -71,6 +73,7 @@ public class FilmController {
     @DeleteMapping(value = "/{id}/like/{userId}")
     public ResponseEntity<Film> deleteLike(@PathVariable long id, @PathVariable long userId) {
         if (filmStorage.getFilmsById(id) == null || filmStorage.getFilmsById(userId) == null || id < 0 || userId < 0) {
+            log.info("Ошибка параметра запроса: " + id + " " + userId);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(filmService.deleteLike(id, userId));
@@ -79,6 +82,7 @@ public class FilmController {
     @GetMapping(value = "/popular")
     public ResponseEntity<List<Film>> getPopularFilms(@RequestParam(defaultValue = "10") long count) {
         if (count < 0) {
+            log.info("Ошибка переменной запроса: " + count);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(filmService.getPopularFilmsList(count));

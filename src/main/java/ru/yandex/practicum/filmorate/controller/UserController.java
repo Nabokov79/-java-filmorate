@@ -55,6 +55,7 @@ public class UserController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
         if (userStorage.getUserById(id) == null || id < 0 ) {
+            log.info("Ошибка параметра запроса: " + id);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(userService.getUserById(id));
@@ -62,7 +63,9 @@ public class UserController {
 
     @PutMapping(value = "/{id}/friends/{friendId}")
     public ResponseEntity<User> addFriends(@PathVariable long id, @PathVariable long friendId) {
-        if (userStorage.getUserById(id) == null  || userStorage.getUserById(friendId) == null || id < 0 || friendId < 0) {
+        if (userStorage.getUserById(id) == null  || userStorage.getUserById(friendId) == null || id < 0
+                                                                                              || friendId < 0) {
+            log.info("Ошибка параметра запроса: " + id + " " + friendId);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(userService.addNewFriend(id,friendId));
@@ -70,7 +73,9 @@ public class UserController {
 
     @DeleteMapping(value = "/{id}/friends/{friendId}")
     public ResponseEntity<User> deleteFriends(@PathVariable long id,@PathVariable long friendId) {
-        if (userStorage.getUserById(id) == null || userStorage.getUserById(friendId) == null || id < 0 || friendId < 0) {
+        if (userStorage.getUserById(id) == null || userStorage.getUserById(friendId) == null || id < 0
+                                                                                             || friendId < 0) {
+            log.info("Ошибка параметра запроса: " + id + " " + friendId);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(userService.deleteFriend(id,friendId));
@@ -79,6 +84,7 @@ public class UserController {
     @GetMapping(value = "/{id}/friends")
     public ResponseEntity<List<User>> getFriendsList(@PathVariable long id) {
         if (userStorage.getUserById(id) == null || id < 0) {
+            log.info("Ошибка параметра запроса: " + id);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(userService.getListUserFriends(id));
@@ -87,6 +93,7 @@ public class UserController {
     @GetMapping(value = "/{id}/friends/common/{otherId}")
     public ResponseEntity<List<User>> getFriendsList(@PathVariable long id, @PathVariable long otherId) {
         if (userStorage.getUserById(id) == null || userStorage.getUserById(otherId) == null || id < 0 || otherId < 0) {
+            log.info("Ошибка параметра запроса: " + id + " " + otherId);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(userService.getListOfMutualFriends(id, otherId));
