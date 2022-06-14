@@ -4,6 +4,8 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.validators.Before;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
@@ -18,6 +20,7 @@ public class User {
     @Before()
     @NotNull
     private LocalDate birthday;
+    private Set<Long> friends = new HashSet<>();
 
     public User(String email, String login, String name, LocalDate birthday) {
         this.email = email;
@@ -26,5 +29,12 @@ public class User {
             this.name = login;
         } else { this.name = name;}
         this.birthday = birthday;
+    }
+
+    public void addFriend(long friendId) {
+        friends.add(friendId);
+    }
+    public void deleteFriend(long userId) {
+        friends.remove(userId);
     }
 }

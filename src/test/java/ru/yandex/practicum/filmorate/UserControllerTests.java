@@ -23,8 +23,10 @@ class UserControllerTests {
 
     @Autowired
     ObjectMapper mapper;
+
     @Autowired
     MockMvc mockMvc;
+
     @Test
     void test1_createValidUserResponseShouldBeOk() throws Exception {
         User user = new User("mail@mail.ru", "login", "name"
@@ -217,7 +219,7 @@ class UserControllerTests {
                                     .contentType(MediaType.APPLICATION_JSON))
                                     .andReturn();
         int statusCod = response.getResponse().getStatus();
-        assertEquals(400, statusCod, "Код ответа " + statusCod);
+        assertEquals(404, statusCod, "Код ответа " + statusCod);
     }
 
     @Test

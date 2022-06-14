@@ -15,18 +15,20 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 @AutoConfigureMockMvc
 public class FilmControllerTests {
+
     @Autowired
     ObjectMapper mapper;
+
     @Autowired
     MockMvc mockMvc;
 
     @Test
     void test1_createValidFilmResponseShouldBeOk() throws Exception {
         Film film = new Film("Film", "new Film"
-                                 , LocalDate.of(1967, 3, 25), 100);
+                                 , LocalDate.of(1967, 3, 25), 100, 1);
         String body = mapper.writeValueAsString(film);
         MvcResult response = mockMvc.perform(post("/films")
                                     .contentType(MediaType.APPLICATION_JSON)
@@ -40,7 +42,7 @@ public class FilmControllerTests {
     @Test
     void test2_createValidFilmResponseShouldBeOk() throws Exception {
         Film film = new Film(null, "new Film"
-                                 , LocalDate.of(1967, 3, 25), 100);
+                                 , LocalDate.of(1967, 3, 25), 100, 1);
         String body = mapper.writeValueAsString(film);
         MvcResult response = mockMvc.perform(post("/films")
                                     .contentType(MediaType.APPLICATION_JSON)
@@ -58,7 +60,7 @@ public class FilmControllerTests {
     @Test
     void test3_createValidFilmResponseShouldBeOk() throws Exception {
         Film film = new Film("Film", null
-                                 , LocalDate.of(1967, 3, 25), 100);
+                                 , LocalDate.of(1967, 3, 25), 100, 1);
         String body = mapper.writeValueAsString(film);
         MvcResult response = mockMvc.perform(post("/films")
                                     .contentType(MediaType.APPLICATION_JSON)
@@ -76,7 +78,7 @@ public class FilmControllerTests {
     @Test
     void test4_createValidFilmResponseShouldBeOk() throws Exception {
         Film film = new Film("Film", "new Film"
-                                 , LocalDate.of(1667, 3, 25), 100);
+                                 , LocalDate.of(1667, 3, 25), 100, 1);
         String body = mapper.writeValueAsString(film);
         MvcResult response = mockMvc.perform(post("/films")
                                     .contentType(MediaType.APPLICATION_JSON)
@@ -93,7 +95,7 @@ public class FilmControllerTests {
 
     @Test
     void test5_createValidFilmResponseShouldBeOk() throws Exception {
-        Film film = new Film("Film", "new Film", null, 100);
+        Film film = new Film("Film", "new Film", null, 100, 1);
         String body = mapper.writeValueAsString(film);
         MvcResult response = mockMvc.perform(post("/films")
                                     .contentType(MediaType.APPLICATION_JSON)
@@ -111,7 +113,7 @@ public class FilmControllerTests {
     @Test
     void test6_createValidFilmResponseShouldBeOk() throws Exception {
         Film film = new Film("Film", "new Film"
-                                 , LocalDate.of(1967, 3, 25), -100);
+                                 , LocalDate.of(1967, 3, 25), -100, 1);
         String body = mapper.writeValueAsString(film);
         MvcResult response = mockMvc.perform(post("/films")
                                     .contentType(MediaType.APPLICATION_JSON)
@@ -138,7 +140,7 @@ public class FilmControllerTests {
     @Test
     void test1_updateValidFilmResponseShouldBeOk() throws Exception {
         Film film = new Film("Film", "new Film"
-                                 , LocalDate.of(1967, 3, 25), 1000);
+                                 , LocalDate.of(1967, 3, 25), 1000, 1);
         String body = mapper.writeValueAsString(film);
         String body_1 = "{\"id\":1,\"name\":\"Film 2\",\"description\":\"new Film 2\",\"releaseDate\":\"1967-03-25\"" +
                                                                                                 ",\"duration\":100}";
@@ -156,14 +158,14 @@ public class FilmControllerTests {
     @Test
     void test2_updateValidFilmResponseShouldBeOk() throws Exception {
         Film film = new Film("Film", "new Film"
-                                 , LocalDate.of(1967, 3, 25), 1000);
+                                 , LocalDate.of(1967, 3, 25), 1000, 1);
         String body = mapper.writeValueAsString(film);
         MvcResult response = mockMvc.perform(put("/films")
                                     .content(body)
                                     .contentType(MediaType.APPLICATION_JSON))
                                     .andReturn();
         int statusCod = response.getResponse().getStatus();
-        assertEquals(400, statusCod, "Код ответа " + statusCod);
+        assertEquals(404, statusCod, "Код ответа " + statusCod);
     }
 
     @Test
@@ -178,9 +180,9 @@ public class FilmControllerTests {
     @Test
     void test1_findValidFilmResponseShouldBeOk() throws Exception {
         Film film_1 = new Film("Film", "new Film"
-                                   , LocalDate.of(1967, 3, 25), 100);
+                                   , LocalDate.of(1967, 3, 25), 100, 1);
         Film film_2 = new Film("Film 2", "new Film 2"
-                , LocalDate.of(1997, 3, 25), 200);
+                , LocalDate.of(1997, 3, 25), 200, 2);
         String body = mapper.writeValueAsString(film_1);
         String body_1 = mapper.writeValueAsString(film_2);
         this.mockMvc.perform(post("/films")
