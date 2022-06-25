@@ -28,10 +28,15 @@ public class Film {
     @Positive
     @NotNull
     private int duration;
-    private long rate;
+
+    @NotNull
+    private String rate;
+    @NotNull
+    private String genre;
+
     private Set<Long> like = new HashSet<>();
 
-    public Film(String name, String description, LocalDate releaseDate, int duration, long rate) {
+    public Film(String name, String description, LocalDate releaseDate, int duration, String rate) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;

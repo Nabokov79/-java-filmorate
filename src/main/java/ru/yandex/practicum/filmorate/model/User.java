@@ -20,6 +20,8 @@ public class User {
     @Before()
     @NotNull
     private LocalDate birthday;
+    @NotNull
+    private String friendshipStatus;
     private Set<Long> friends = new HashSet<>();
 
     public User(String email, String login, String name, LocalDate birthday) {
