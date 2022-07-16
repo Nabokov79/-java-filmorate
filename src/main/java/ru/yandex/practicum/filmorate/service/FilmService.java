@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.CustomException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -30,12 +31,12 @@ public class FilmService {
     }
 
     public Film getFilmById(long id) {
-        Optional<Film> result = filmStorage.getFilmsById(id);
-        if (result.isEmpty()) {
+        try {
+            return filmStorage.getFilmsById(id);
+        } catch (DataAccessException dax) {
             log.info("Film id = " + id + " not found.");
             throw new CustomException("Film id = " + id + " not found.");
         }
-        return result.get();
     }
 
     public List<Film> getAllFilms() {

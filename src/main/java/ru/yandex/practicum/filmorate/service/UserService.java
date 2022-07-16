@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.CustomException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -34,12 +35,12 @@ public class UserService {
     }
 
     public User getUserById(long id) {
-        Optional<User> result = userStorage.getUserById(id);
-        if (result.isEmpty()) {
-            log.info("User id = " + id + " not found.");
+        try {
+            return userStorage.getUserById(id);
+        } catch (DataAccessException dax) {
+            log.info("Film id = " + id + " not found.");
             throw new CustomException("Film id = " + id + " not found.");
         }
-        return result.get();
     }
     public void deleteUserById(long id) {
         getUserById(id);
