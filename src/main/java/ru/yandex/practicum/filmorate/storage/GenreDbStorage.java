@@ -21,35 +21,35 @@ public class GenreDbStorage implements GenreStorage{
 
     @Override
     public Genre getGenreByID(int id) {
-        return jdbcTemplate.queryForObject("select GENRE_ID, NAME_GENRE from GENRE  where GENRE_ID = ?",
+        return jdbcTemplate.queryForObject("SELECT GENRE_ID, NAME_GENRE FROM GENRE WHERE GENRE_ID = ?",
                 this::makeGenre, id);
     }
 
     @Override
     public List<Genre> getAllGenre() {
-        return jdbcTemplate.query("select GENRE_ID, NAME_GENRE from GENRE",
+        return jdbcTemplate.query("SELECT GENRE_ID, NAME_GENRE FROM GENRE",
                 this::makeGenre);
     }
 
     @Override
     public void saveGenres(int genreId, long id) {
-        String sqlQuery = "insert into FILMS_GENRE (GENRE_ID, FILM_ID) values (?,?)";
+        String sqlQuery = "INSERT INTO FILMS_GENRE (GENRE_ID, FILM_ID) VALUES (?,?)";
         jdbcTemplate.update(sqlQuery, genreId, id);
     }
 
     @Override
     public void deleteGenres(long filmId) {
-        String sqlQuery = "delete from FILMS_GENRE where FILM_ID = ?";
+        String sqlQuery = "DELETE FROM FILMS_GENRE WHERE FILM_ID = ?";
         jdbcTemplate.update(sqlQuery, filmId);
     }
 
     @Override
     public List<Genre> getFilmGenres(long id) {
-        return jdbcTemplate.query("select g.GENRE_ID, g.NAME_GENRE " +
-                                      "from FILMS_GENRE as fg " +
-                                      "JOIN GENRE as g on fg.GENRE_ID = g.GENRE_ID  " +
-                                      "where fg.FILM_ID = " + id +
-                                     " GROUP BY fg.GENRE_ID",
+        return jdbcTemplate.query("SELECT g.GENRE_ID, g.NAME_GENRE " +
+                                      "FROM FILMS_GENRE AS fg " +
+                                      "JOIN GENRE AS g ON fg.GENRE_ID = g.GENRE_ID  " +
+                                      "WHERE fg.FILM_ID = " + id +
+                                      " GROUP BY fg.GENRE_ID",
                 this::makeGenre);
     }
 

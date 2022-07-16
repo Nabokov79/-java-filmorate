@@ -20,13 +20,13 @@ public class MPADbStorage implements MPAStorage {
 
     @Override
     public MPA getMPAByID(int id) {
-        return jdbcTemplate.queryForObject("select MPA_ID, NAME_MPA from MPA  where MPA_ID = ?",
+        return jdbcTemplate.queryForObject("SELECT MPA_ID, NAME_MPA FROM MPA  WHERE MPA_ID = ?",
                 this::makeMPA, id);
     }
 
     @Override
     public List<MPA> getAllMPA() {
-        return jdbcTemplate.query("select MPA_ID, NAME_MPA from MPA",
+        return jdbcTemplate.query("SELECT MPA_ID, NAME_MPA FROM MPA",
                 this::makeMPA);
     }
 
