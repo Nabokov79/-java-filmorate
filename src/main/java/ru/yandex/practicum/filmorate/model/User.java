@@ -11,30 +11,26 @@ import java.util.Set;
 public class User {
 
     private long id;
-    @Email
-    private String email;
+
+    private String name;
     @NotBlank
     @Pattern(regexp = "\\S*$")
     private String login;
-    private String name;
+    @Email
+    private String email;
     @Before()
     @NotNull
     private LocalDate birthday;
-    private Set<Long> friends = new HashSet<>();
 
-    public User(String email, String login, String name, LocalDate birthday) {
+    public User(long id, String email, String name, String login, LocalDate birthday) {
+        this.id = id;
         this.email = email;
         this.login = login;
-        if(name == null || name.equals("")) {
+        if (name == null || name.equals("")) {
             this.name = login;
-        } else { this.name = name;}
+        } else {
+            this.name = name;
+        }
         this.birthday = birthday;
-    }
-
-    public void addFriend(long friendId) {
-        friends.add(friendId);
-    }
-    public void deleteFriend(long userId) {
-        friends.remove(userId);
     }
 }
