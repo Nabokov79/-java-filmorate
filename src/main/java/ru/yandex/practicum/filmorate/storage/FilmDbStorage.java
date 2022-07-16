@@ -15,7 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Repository
 @Slf4j
@@ -75,15 +74,12 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Optional<Film> getFilmsById(long id) {
+    public Film getFilmsById(long id) {
         String sqlQuery = "SELECT FILM_ID, NAME_FILM, RELEASE_DATE, DESCRIPTION, DURATION, MPA_ID " +
                           "FROM FILMS " +
                           "WHERE FILM_ID = ?";
-        List<Film> result = jdbcTemplate.query(sqlQuery,
+        return jdbcTemplate.queryForObject(sqlQuery,
                 this::makeFilm, id);
-        return result.size() == 0 ?
-                Optional.empty():
-                Optional.of(result.get(0));
     }
 
     @Override

@@ -62,9 +62,9 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Optional<User> getUserById(long id) {
+    public User getUserById(long id) {
         String sqlQuery = "select USER_ID, EMAIL, NAME_USER, LOGIN_USER,  BIRTHDAY from USERS where USER_ID = ?";
-        List<User> result = jdbcTemplate.query(sqlQuery,
+        return jdbcTemplate.queryForObject(sqlQuery,
                 (rs, rowNum) -> new User(
                         rs.getLong("USER_ID"),
                         rs.getString("EMAIL"),
@@ -72,9 +72,7 @@ public class UserDbStorage implements UserStorage {
                         rs.getString("LOGIN_USER"),
                         rs.getDate("BIRTHDAY").toLocalDate()
                 ), id);
-        return result.size() == 0 ?
-                Optional.empty():
-                Optional.of(result.get(0));
+
     }
 
     @Override
