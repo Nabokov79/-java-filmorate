@@ -1,2 +1,2 @@
 # java-filmorate
-Template repository for Filmorate project.
+![schema](https://github.com/Nabokov79/java-filmorate/blob/add-database/schema.jpg)

@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.exeption;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class CustomException extends RuntimeException {
 
     public CustomException(String message) {
