@@ -1,19 +1,18 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.service.GenreService;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/genres")
+@Slf4j
 public class GenreController {
-
     private final GenreService genreService;
 
     @Autowired
@@ -21,16 +20,15 @@ public class GenreController {
         this.genreService = genreService;
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<Genre> getGenreByID(@PathVariable int id) {
-        if ( id < 0) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok().body(genreService.getGenreByID(id));
+    @GetMapping
+    public List<Genre> getAll() {
+        log.info("Получен GET запрос к эндпоинту /genres");
+        return genreService.getAll();
     }
 
-    @GetMapping
-    public ResponseEntity<List<Genre>> getAllGenre() {
-        return ResponseEntity.ok().body(genreService.getAllGenre());
+    @GetMapping("/{id}")
+    public Genre getById(@PathVariable int id) {
+        log.info("Получен GET запрос к эндпоинту /genres/{}", id);
+        return genreService.getById(id);
     }
 }

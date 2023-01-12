@@ -1,42 +1,30 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.filmorate.validators.After;
-import javax.validation.constraints.*;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
-public class Film {
-
-
-    private long id;
-    @NotEmpty
-    @NotNull
+public class Film implements Comparable<Film>{
     private String name;
-    @NotNull
-    @Size(min = 1, max = 200)
     private String description;
-    @After("1895-12-28")
-    @NotNull
+    private int id;
     private LocalDate releaseDate;
-    @Positive
-    @NotNull
     private int duration;
-    @NotNull
-    private MPA mpa;
-
-    private List<Genre> genres;
-
-    public Film(long id, String name, String description, LocalDate releaseDate, int duration, MPA mpa, List<Genre> genres) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.mpa = mpa;
-        this.genres = genres;
+    private Set<Integer> likes = new HashSet<>();
+    private List<Genre> genres = new ArrayList<>();
+    private MpaRating mpa;
+    private List<Director> directors;
+    @Override
+    public int compareTo(Film o) {
+        return o.getLikes().size() - this.getLikes().size();
     }
 }

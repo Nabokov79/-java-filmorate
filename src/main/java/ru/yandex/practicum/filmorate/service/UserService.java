@@ -1,72 +1,66 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exeption.CustomException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
-import java.util.*;
+import ru.yandex.practicum.filmorate.storage.film.dao.FilmDao;
+import ru.yandex.practicum.filmorate.storage.user.dao.FriendsDao;
+import ru.yandex.practicum.filmorate.storage.user.dao.UserDao;
+
+import java.util.List;
 
 @Service
-@Slf4j
 public class UserService {
-    private final UserStorage userStorage;
+
+    private final UserDao userDao;
+    private final FriendsDao friendsDao;
+    private final FilmDao filmDao;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
+    public UserService(UserDao userDao, FriendsDao friendsDao, FilmDao filmDao) {
+        this.userDao = userDao;
+        this.friendsDao = friendsDao;
+        this.filmDao = filmDao;
     }
 
-    public User saveUser(User user) {
-        userStorage.saveUser(user);
-        return user;
+    public User add(User user) {
+        return userDao.add(user);
     }
 
-    public User updateUser(User user) {
-        getUserById(user.getId());
-        userStorage.updateUser(user);
-        return getUserById(user.getId());
+    public User update(User user) {
+        return userDao.update(user);
     }
 
-    public List<User> getAllUsers() {
-        return userStorage.getAllUsers();
+    public List<User> getAll() {
+        return userDao.getAll();
     }
 
-    public User getUserById(long id) {
-        try {
-            return userStorage.getUserById(id);
-        } catch (DataAccessException dax) {
-            log.info("Film id = " + id + " not found.");
-            throw new CustomException("Film id = " + id + " not found.");
-        }
-    }
-    public void deleteUserById(long id) {
-        getUserById(id);
-        userStorage.deleteUserById(id);
+    public User getUserById(int id) {
+        return userDao.getUserById(id);
     }
 
-    public void addNewFriend(long id, long friendId) {
-        getUserById(id);
-        getUserById(friendId);
-        userStorage.addFriend(id, friendId);
+    public void addFriend(int userId, int targetUserId) {
+        friendsDao.addFriend(userId, targetUserId);
     }
 
-    public void deleteFriend(long id, long friendId) {
-        getUserById(id);
-        getUserById(friendId);
-        userStorage.deleteFriends(id, friendId);
+    public void deleteFriend(int userId, int targetUserId) {
+        friendsDao.deleteFriend(userId, targetUserId);
     }
 
-    public List<User> getListUserFriends(long id) {
-        getUserById(id);
-        return userStorage.getListUserFriends(id);
+    public List<User> getCommonFriendsId(int userId, int targetUserId) {
+        return friendsDao.getCommonFriends(userId, targetUserId);
     }
 
-    public List<User> getMutualFriends(long id, long otherId) {
-       getUserById(id);
-       getUserById(otherId);
-        return userStorage.getListMutualFriends(id, otherId);
+    public List<User> getFriendList(int userId) {
+        return friendsDao.getFriends(userDao.getUserById(userId).getId());
+    }
+
+    public void deleteUserById(int id) {
+        userDao.deleteUserById(id);
+    }
+
+    public List<Film> getRecommendedFilmsList(int id) {
+        return filmDao.getRecommendedFilms(id);
     }
 }

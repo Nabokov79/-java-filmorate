@@ -1,62 +1,131 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exeption.CustomException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import java.util.*;
+import ru.yandex.practicum.filmorate.storage.film.dao.FilmDao;
+import ru.yandex.practicum.filmorate.storage.film.dao.LikesDao;
+import ru.yandex.practicum.filmorate.storage.user.dao.UserDao;
+import ru.yandex.practicum.filmorate.validator.Validator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 public class FilmService {
-    private final FilmStorage filmStorage;
+
+    private final FilmDao filmDao;
+    private final UserDao userDao;
+    private final LikesDao likesDao;
+    private final GenreService genreService;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
-        this.filmStorage = filmStorage;
+    public FilmService(@Qualifier("filmDaoImpl") FilmDao filmDao,
+                       @Qualifier("userDaoImpl") UserDao userDao,
+                       LikesDao likesDao,
+                       GenreService genreService) {
+        this.filmDao = filmDao;
+        this.userDao = userDao;
+        this.likesDao = likesDao;
+        this.genreService = genreService;
     }
 
-    public Film saveFilm(Film film) {
-        filmStorage.save(film);
-        return getFilmById(film.getId());
-    }
-
-    public Film updateFilm(Film film) {
-        getFilmById(film.getId());
-        filmStorage.updateFilm(film);
-        return getFilmById(film.getId());
-    }
-
-    public Film getFilmById(long id) {
-        try {
-            return filmStorage.getFilmsById(id);
-        } catch (DataAccessException dax) {
-            log.info("Film id = " + id + " not found.");
-            throw new CustomException("Film id = " + id + " not found.");
+    public Film add(Film film) {
+        Validator.validateFilm(film);
+        if (Objects.nonNull(film.getGenres()) || !film.getGenres().isEmpty()) {
+            film.setGenres(genreService.deleteDuplicates(film.getGenres()));
         }
+        return filmDao.add(film);
     }
 
-    public List<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
+    public Film update(Film film) {
+        Validator.validateFilm(film);
+        if (Objects.nonNull(film.getGenres())) {
+            film.setGenres(genreService.deleteDuplicates(film.getGenres()));
+        }
+        return filmDao.update(film);
     }
 
-    public void deleteFilmById(long id) {
-        getFilmById(id);
-        filmStorage.deleteFilmById(id);
+    public void setLike(int userId, int filmId) {
+        likesDao.addLike(userId, filmId);
     }
 
-    public List<Film> getPopularFilmsList(int count) {
-        return filmStorage.getPopularFilmsList(count);
+    public void deleteLike(int userId, int filmId) {
+        likesDao.deleteLike(userId, filmId);
     }
 
-    public void addLike(long id, long userId) {
-        filmStorage.addLike(id, userId);
+    public List<Film> getPopularFilms(Integer count, Integer genreId, Integer year) {
+        if (Objects.isNull(year) && Objects.isNull(genreId)) {
+            return filmDao.getPopularFilmsNonGenresYear(count);
+        }
+        if (Objects.isNull(year)) {
+            return filmDao.getPopularFilmsNonYear(count, genreId);
+        }
+        if (Objects.isNull(genreId)) {
+            return filmDao.getPopularFilmsNonGenre(count, year);
+        }
+        return filmDao.getPopularFilms(count, genreId, year);
     }
 
-    public boolean deleteLike(long id, long userId) {
-        return filmStorage.deleteLike(id, userId);
+    public Film getFilmById(int id) {
+        return filmDao.getFilmById(id);
+    }
+
+    public List<Film> getAll() {
+        return filmDao.getAll();
+    }
+
+    public List<Film> getFilmsByDirectorId(int directorId, String sortedBy) {
+        return filmDao.getFilmsByDirectorId(directorId, sortedBy);
+    }
+
+    public void deleteFilmById(int id) {
+        filmDao.deleteFilmById(id);
+    }
+
+    public List<Film> getCommonFilms(int userId, int friendId) {
+        return filmDao.getCommonFilms(userDao.getUserById(userId).getId(),
+                userDao.getUserById(friendId).getId());
+    }
+
+    public List<Film> searchFilms(String query, String by) {
+        String[] split = by.split(",");
+        List<Film> films;
+        List<Film> filmsByDirectorsAndFilms = filmDao.searchFilms("%" + query + "%");
+        if (split.length == 2) {
+            films = new ArrayList<>(filmsByDirectorsAndFilms);
+            return films;
+        }
+        if ("title".equals(split[0])) {
+            films = filmsByDirectorsAndFilms.stream()
+                    .filter(film -> isContain(film.getName(), query))
+                    .collect(Collectors.toList());
+        } else {
+            films = filmsByDirectorsAndFilms.stream()
+                    .filter(film -> isDirectorFind(film, query))
+                    .collect(Collectors.toList());
+        }
+        return films;
+    }
+
+    private boolean isDirectorFind(Film film, String query) {
+        for (Director director : film.getDirectors()) {
+            if (isContain(director.getName(), query)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isContain(String line, String query) {
+        if (line.toLowerCase().contains(query.toLowerCase())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

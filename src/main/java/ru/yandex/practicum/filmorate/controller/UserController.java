@@ -2,20 +2,20 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
-import javax.validation.Valid;
+
+import java.util.Collection;
 import java.util.List;
 
-@Controller
-@RequestMapping("/users")
 @Slf4j
+@RestController
+@RequestMapping("/users")
 public class UserController {
+    private UserService userService;
 
-    private final UserService userService;
+    public UserController() {
+
+    }
 
     @Autowired
     public UserController(UserService userService) {
@@ -23,49 +23,65 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> saveUser(@Valid @RequestBody User user) {
-        return ResponseEntity.ok().body(userService.saveUser(user));
+    public User add(@RequestBody User user) {
+        log.info("Получен POST запрос к эндпоинту /users");
+        return userService.add(user);
     }
 
     @PutMapping
-    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
-        return ResponseEntity.ok().body(userService.updateUser(user));
+    public User update(@RequestBody User user) {
+        log.info("Получен PUT запрос к эндпоинту /users");
+        return userService.update(user);
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok().body(userService.getAllUsers());
+    public List<User> getAll() {
+        log.info("Получен GET запрос к эндпоинту /users");
+        return userService.getAll();
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable long id) {
-        return ResponseEntity.ok().body(userService.getUserById(id));
-    }
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<User> deleteUserById(@PathVariable long id) {
-        userService.deleteUserById(id);
-        return ResponseEntity.ok().build();
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable int id) {
+        log.info("Получен GET запрос к эндпоинту /users/{}", id);
+        return userService.getUserById(id);
     }
 
-    @PutMapping(value = "/{id}/friends/{friendId}")
-    public ResponseEntity<User> addFriends(@PathVariable long id, @PathVariable long friendId) {
-        userService.addNewFriend(id,friendId);
-        return ResponseEntity.ok().build();
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable int id,
+                          @PathVariable int friendId) {
+        log.info("Получен PUT запрос к эндпоинту /users/{}/friends{}", id, friendId);
+        userService.addFriend(id, friendId);
     }
 
-    @DeleteMapping(value = "/{id}/friends/{friendId}")
-    public ResponseEntity<User> deleteFriends(@PathVariable long id,@PathVariable long friendId) {
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFromFriend(@PathVariable int id,
+                                 @PathVariable int friendId) {
+        log.info("Получен DELETE запрос к экндпоинту /users/{}/friends/{}", id, friendId);
         userService.deleteFriend(id, friendId);
-        return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/{id}/friends")
-    public ResponseEntity<List<User>> getFriendsUserList(@PathVariable long id) {
-        return ResponseEntity.ok().body(userService.getListUserFriends(id));
+    @GetMapping("/{id}/friends")
+    public Collection<User> getFriendList(@PathVariable int id) {
+        log.info("Получен GET запрос к эндпоинту /users/{}/friends", id);
+        return userService.getFriendList(id);
     }
 
-    @GetMapping(value = "/{id}/friends/common/{otherId}")
-    public ResponseEntity<List<User>> getListOfMutualFriends(@PathVariable long id, @PathVariable long otherId) {
-        return ResponseEntity.ok().body(userService.getMutualFriends(id, otherId));
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getCommonFriends(@PathVariable int id,
+                                             @PathVariable int otherId) {
+        log.info("Получен GET запрос к эндпоинту /users/{}/friends/common/{}", id, otherId);
+        return userService.getCommonFriendsId(id, otherId);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUserById(@PathVariable int id) {
+        log.info("Получен DELETE запрос к эндпоинту /users/{}", id);
+        userService.deleteUserById(id);
+    }
+
+    @GetMapping("/{id}/recommendations")
+    public List<Film> getRecommendFilmsList(@PathVariable int id) {
+        log.info("Получен GET запрос к эндпоинту /users/{}/recommendations", id);
+        return userService.getRecommendedFilmsList(id);
     }
 }

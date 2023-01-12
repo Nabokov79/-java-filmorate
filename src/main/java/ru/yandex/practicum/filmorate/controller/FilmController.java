@@ -2,75 +2,92 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.service.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 
-@Controller
-@RequestMapping("/films")
 @Slf4j
+@RestController
+@RequestMapping("/films")
 public class FilmController {
+    FilmService filmService;
 
-    private final FilmService filmService;
-    private final UserService userService;
+    public FilmController() {
+
+    }
 
     @Autowired
-    public FilmController(FilmService filmService, UserService userService) {
+    public FilmController(FilmService filmService) {
         this.filmService = filmService;
-        this.userService = userService;
     }
 
     @PostMapping
-    public ResponseEntity<Film> saveFilm(@Valid @RequestBody Film film) {
-        return ResponseEntity.ok().body(filmService.saveFilm(film));
+    public Film add(@RequestBody Film film) {
+        log.info("Получен POST запрос к эндпоинту /films");
+        return filmService.add(film);
     }
 
     @PutMapping
-    public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
-
-        return ResponseEntity.ok().body(filmService.updateFilm(film));
-    }
-
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<Film> getFilmById(@PathVariable long id) {
-        return ResponseEntity.ok().body(filmService.getFilmById(id));
+    public Film update(@RequestBody Film film) {
+        log.info("Получен PUT запрос к эндпоинту /films");
+        return filmService.update(film);
     }
 
     @GetMapping
-    public ResponseEntity<List<Film>> getAllFilms() {
-        return ResponseEntity.ok().body(filmService.getAllFilms());
+    public List<Film> getAll() {
+        log.info("Получен GET запрос к эндпоинту /films");
+        return filmService.getAll();
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Film> deleteFilmById(@PathVariable long id) {
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable int id) {
+        log.info("Получен GEt запрос к эндпоинту /films/{}", id);
+        return filmService.getFilmById(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void setLike(@PathVariable int id,
+                        @PathVariable int userId) {
+        log.info("Получен PUT запрос к эндпоинту /{}/like/{}", id, userId);
+        filmService.setLike(userId, id);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@PathVariable int id,
+                           @PathVariable int userId) {
+        log.info("Получен DELETE запрос к эндпоинту /{}/like/{}", id, userId);
+        filmService.deleteLike(userId, id);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count,
+                                      @RequestParam(required = false) Integer genreId,
+                                      @RequestParam(required = false) Integer year) {
+        log.info("Получен GET запрос к эндпоинту /popular?count={limit}&genreId={genreId}&year={year}");
+        return filmService.getPopularFilms(count, genreId, year);
+    }
+
+    @GetMapping("/director/{directorId}")
+    public List<Film> getFilmsByDirectorId(@PathVariable int directorId,
+                                           @RequestParam String sortBy) {
+        return filmService.getFilmsByDirectorId(directorId, sortBy);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteFilmById(@PathVariable int id) {
+        log.info("Получен DELETE запрос к эндпоинту /users/{}", id);
         filmService.deleteFilmById(id);
-        return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/popular")
-    public ResponseEntity<List<Film>> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
-        return ResponseEntity.ok().body(filmService.getPopularFilmsList(count));
+    @GetMapping("/common")
+    public List<Film> getCommonFilms(@RequestParam int userId, @RequestParam int friendId) {
+        log.info("Получен GET запрос к эндпоинту /common");
+        return filmService.getCommonFilms(userId, friendId);
     }
 
-    @PutMapping(value = "/{id}/like/{userId}")
-    public ResponseEntity<Long> addFilmLike(@PathVariable long id, @PathVariable long userId) {
-        filmService.getFilmById(id);
-        userService.getUserById(userId);
-        filmService.addLike(id, userId);
-        return ResponseEntity.ok().build();
+    @GetMapping("/search")
+    public List<Film> searchFilms(@RequestParam String query, @RequestParam String by) {
+        log.info("Получен GET запрос к эндпоинту /search?query={}&by={}", query, by);
+        return filmService.searchFilms(query, by);
     }
-
-    @DeleteMapping(value = "/{id}/like/{userId}")
-    public ResponseEntity<Boolean> deleteLike(@PathVariable long id, @PathVariable long userId) {
-        filmService.getFilmById(id);
-        userService.getUserById(userId);
-        return ResponseEntity.ok().body(filmService.deleteLike(id, userId));
-    }
-
 }
